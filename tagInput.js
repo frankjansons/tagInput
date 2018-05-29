@@ -11,19 +11,34 @@ $.fn.tagInput = function(options) {
 		cleanUpHiddenField();
 		
 		var defaultValues = hiddenInput.val().split(',');
-		
-		for(i=0; i<defaultValues.length; i++) {
-			addLabel(defaultValues[i]);
+		if (hiddenInput.val()!="") {
+			for(i=0; i<defaultValues.length; i++) {
+				addLabel(defaultValues[i]);
+			}
 		}
-     
-		textInput.keyup(function(event) {
+		textInput.keydown(function(event) {
+			var str = $(this).val();
 			if(event.keyCode == 8) { //Backspace
-				closeLabel(-1);
-			} else if( event.keyCode == 27 ) { //Escape
+				if(str.length == 0) {
+					closeLabel(-1);
+				}
+			} else if( event.keyCode == 13 ) { //Enter
+				makeBadge();
+				event.preventDefault();
+				return false;
+			}
+		});
+		
+		textInput.keyup(function(event) {
+			var str = $(this).val();
+			if( event.keyCode == 27 ) { //Escape
 				textInput.val("");
 				textInput.blur();
+			} else if( event.keyCode == 13 ) { //Enter
+				makeBadge();
+				event.preventDefault();
+				return false;
 			}
-			var str = $(this).val();
 			if (str.indexOf(",") >= 0) {
 				makeBadge();
 			}
@@ -35,12 +50,15 @@ $.fn.tagInput = function(options) {
 		
 		function makeBadge() {
 			str = textInput.val();
-			str = str.replace(',','');
-			textInput.val("");
-			addLabel(str);
-			var result = textInput.next();
-			result.val(result.val()+','+str);
-			cleanUpHiddenField();
+			if(/\S/.test(str)) {
+				str = str.replace(',','');
+				str = str.trim();
+				textInput.val("");
+				addLabel(str);
+				var result = textInput.next();
+				result.val(result.val()+','+str);
+				cleanUpHiddenField();
+			}
 		}
 		
 		function closeLabel(id) {
