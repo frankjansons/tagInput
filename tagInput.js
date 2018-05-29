@@ -16,7 +16,13 @@ $.fn.tagInput = function(options) {
 			addLabel(defaultValues[i]);
 		}
      
-		textInput.keyup(function() {
+		textInput.keyup(function(event) {
+			if(event.keyCode == 8) { //Backspace
+				closeLabel(-1);
+			} else if( event.keyCode == 27 ) { //Escape
+				textInput.val("");
+				textInput.blur();
+			}
 			var str = $(this).val();
 			if (str.indexOf(",") >= 0) {
 				makeBadge();
@@ -38,7 +44,11 @@ $.fn.tagInput = function(options) {
 		}
 		
 		function closeLabel(id) {
-			label = tagInput.children('span.tagLabel[data-badge='+id+']');
+			if(id>0) {
+				label = tagInput.children('span.tagLabel[data-badge='+id+']');
+			} else {
+				label = tagInput.children('span.tagLabel').last();
+			}
 			hiddenInput.val(hiddenInput.val().replace((label.text().slice(0,-2)),''));
 			cleanUpHiddenField();
 			label.remove();
