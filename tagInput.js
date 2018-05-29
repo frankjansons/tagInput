@@ -1,8 +1,8 @@
-$.fn.tagInput = function() {
+$.fn.tagInput = function(options) {
 
-	return this.each(function(options) {
+	return this.each(function() {
 	
-		var settings = $.extend( $.fn.tagInput.defaults, options );
+		var settings = $.extend( {}, { labelClass: "label label-success" }, options );
 	
 		var tagInput = $(this);
 		var hiddenInput = $(this).children('input[type=hidden]');
@@ -48,9 +48,9 @@ $.fn.tagInput = function() {
 			if(tagInput.children('span.tagLabel').length > 0) {
 				badge = textInput.prev();
 				var id = badge.data('badge') + 1;
-				label = $( '<span class="label '+settings.labelClass+' tagLabel" data-badge="'+id+'">'+str+' <a href="#" data-badge="'+id+'" aria-label="close" class="closelabel">&times;</a></span> ' ).insertAfter(badge);
+				label = $( '<span class="'+settings.labelClass+' tagLabel" data-badge="'+id+'">'+str+' <a href="#" data-badge="'+id+'" aria-label="close" class="closelabel">&times;</a></span> ' ).insertAfter(badge);
 			} else {
-				label = $( '<span class="label '+settings.labelClass+' tagLabel" data-badge="1">'+str+' <a href="#" data-badge="1" aria-label="close" class="closelabel">&times;</a></span> ' ).insertBefore(textInput);
+				label = $( '<span class="'+settings.labelClass+' tagLabel" data-badge="1">'+str+' <a href="#" data-badge="1" aria-label="close" class="closelabel">&times;</a></span> ' ).insertBefore(textInput);
 			}
 			label.children('.closelabel').click(function() {				
 				closeLabel($(this).data('badge'));
@@ -65,8 +65,4 @@ $.fn.tagInput = function() {
 		
 	});
 
-};
-
-$.fn.tagInput.defaults = {
-    labelClass: "label-success"
 };
